@@ -349,7 +349,7 @@ const PackageTracker = ({ packageId, userRole = 'customer', isDemo = false }) =>
           </div>
           <div>
             <p className="text-gray-600">Delivery Fee:</p>
-            <p className="font-medium text-green-600">${packageData.deliveryFee}</p>
+            <p className="font-medium text-green-600">₹{packageData.deliveryFee}</p>
           </div>
           <div>
             <p className="text-gray-600">Deadline:</p>

@@ -134,7 +134,7 @@ const FreeRoutePlanner = ({
         markers.push({
           position: pkg.pickupCoords,
           title: `Package ${index + 1} - Pickup`,
-          infoWindow: `<div><strong>${pkg.title}</strong><br/>Pickup: ${pkg.pickupLocation}<br/>Fee: $${pkg.deliveryFee}</div>`
+          infoWindow: `<div><strong>${pkg.title}</strong><br/>Pickup: ${pkg.pickupLocation}<br/>Fee: ₹${pkg.deliveryFee}</div>`
         });
       }
     });
@@ -270,7 +270,7 @@ const FreeRoutePlanner = ({
               </h4>
               <div className="flex items-center text-green-600 font-medium">
                 <DollarSign className="h-4 w-4 mr-1" />
-                Total Earnings: ${totalEarnings}
+                Total Earnings: ₹{totalEarnings}
               </div>
             </div>
             
@@ -286,7 +286,7 @@ const FreeRoutePlanner = ({
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-semibold text-green-600">
-                        ${pkg.deliveryFee}
+                        ₹{pkg.deliveryFee}
                       </div>
                       <div className="text-xs text-gray-500">
                         {Math.round(pkg.matchScore)}% match

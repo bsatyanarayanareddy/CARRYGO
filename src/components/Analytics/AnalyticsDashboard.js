@@ -60,7 +60,7 @@ const AnalyticsDashboard = () => {
           'New package posted: Electronics delivery',
           'Package completed successfully',
           'New traveler registered',
-          'Payment of $45 received'
+          'Payment of ₹45 received'
         ][Math.floor(Math.random() * 4)],
         timestamp: subDays(today, Math.floor(Math.random() * 7)),
         user: `User${Math.floor(Math.random() * 100) + 1}`
@@ -162,7 +162,7 @@ const AnalyticsDashboard = () => {
           />
           <MetricCard
             title="Revenue"
-            value={`$${analyticsData?.summary.totalRevenue.toLocaleString()}`}
+            value={`₹${analyticsData?.summary.totalRevenue.toLocaleString()}`}
             trend={28.7}
             icon={DollarSign}
             color="bg-yellow-500"

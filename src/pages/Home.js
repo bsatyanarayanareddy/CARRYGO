@@ -18,13 +18,13 @@ const Home = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center fade-in">
             <Link 
-              to="/register" 
+              to="/traveler" 
               className="bg-primary-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-primary-700 transition-all transform hover:scale-105"
             >
               Start Earning Today
             </Link>
             <Link 
-              to="/register" 
+              to="/post-package" 
               className="border-2 border-primary-600 text-primary-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-primary-600 hover:text-white transition-all"
             >
               Send a Package

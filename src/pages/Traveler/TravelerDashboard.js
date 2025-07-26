@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { MapPin, Route, Package, DollarSign, Clock, Search } from 'lucide-react';
+import { MapPin, Route, Package, DollarSign, Clock, Search, AlertCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { getPackages, createDelivery } from '../../firebase/config';
 import toast from 'react-hot-toast';
 
@@ -13,6 +14,37 @@ const TravelerDashboard = ({ user, userProfile }) => {
   const [loading, setLoading] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
 
+  // If user is not logged in, show login prompt
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+            <AlertCircle className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Login Required</h2>
+            <p className="text-gray-600 mb-6">
+              Please log in to access the traveler dashboard and start earning money by delivering packages.
+            </p>
+            <div className="space-y-4">
+              <Link
+                to="/login"
+                className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                Login to Continue
+              </Link>
+              <div>
+                <span className="text-gray-600">Don't have an account? </span>
+                <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
+                  Sign up here
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const handleRouteSearch = async (e) => {
     e.preventDefault();
     if (!route.from || !route.to) {
@@ -24,29 +56,53 @@ const TravelerDashboard = ({ user, userProfile }) => {
     setSearchActive(true);
 
     try {
-      // Get all pending packages
-      const packages = await getPackages({ status: 'pending' });
+      // Get all available packages
+      const packages = await getPackages({ status: 'posted' });
       
-      // Filter packages that match the route (case-insensitive)
+      if (packages.length === 0) {
+        // Try without status filter if no packages found with 'posted' status
+        const allPackages = await getPackages();
+        const availablePackages = allPackages.filter(pkg => 
+          !pkg.status || pkg.status === 'posted' || pkg.status === 'pending' || pkg.status === 'active'
+        );
+        setFilteredPackages(availablePackages);
+        
+        if (availablePackages.length === 0) {
+          toast.info('No packages available at the moment. Check back later!');
+        } else {
+          toast.success(`Found ${availablePackages.length} available packages!`);
+        }
+        return;
+      }
+      
+      // Filter packages that match the route (more flexible matching)
       const matchingPackages = packages.filter(pkg => {
-        const fromMatch = pkg.fromLocation.toLowerCase().includes(route.from.toLowerCase()) ||
-                         route.from.toLowerCase().includes(pkg.fromLocation.toLowerCase());
-        const toMatch = pkg.toLocation.toLowerCase().includes(route.to.toLowerCase()) ||
-                       route.to.toLowerCase().includes(pkg.toLocation.toLowerCase());
+        const fromMatch = 
+          pkg.pickupLocation?.toLowerCase().includes(route.from.toLowerCase()) ||
+          pkg.fromLocation?.toLowerCase().includes(route.from.toLowerCase()) ||
+          route.from.toLowerCase().includes(pkg.pickupLocation?.toLowerCase() || '') ||
+          route.from.toLowerCase().includes(pkg.fromLocation?.toLowerCase() || '');
+          
+        const toMatch = 
+          pkg.dropoffLocation?.toLowerCase().includes(route.to.toLowerCase()) ||
+          pkg.toLocation?.toLowerCase().includes(route.to.toLowerCase()) ||
+          route.to.toLowerCase().includes(pkg.dropoffLocation?.toLowerCase() || '') ||
+          route.to.toLowerCase().includes(pkg.toLocation?.toLowerCase() || '');
+          
         return fromMatch && toMatch;
       });
 
-      setFilteredPackages(matchingPackages);
+      setFilteredPackages(matchingPackages.length > 0 ? matchingPackages : packages);
       
       if (matchingPackages.length === 0) {
-        toast.info('No packages found for your route. Showing all available packages.');
-        setFilteredPackages(packages);
+        toast.info(`No exact matches for your route. Showing all ${packages.length} available packages.`);
       } else {
         toast.success(`Found ${matchingPackages.length} packages matching your route!`);
       }
     } catch (error) {
       console.error('Error searching packages:', error);
-      toast.error('Error searching for packages');
+      toast.error('Error searching for packages. Please try again.');
+      setSearchActive(false);
     } finally {
       setLoading(false);
     }

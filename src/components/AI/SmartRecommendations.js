@@ -27,8 +27,8 @@ const SmartRecommendations = ({ userProfile }) => {
           icon: TrendingUp,
           color: 'bg-blue-500',
           data: {
-            currentPrice: '$45',
-            suggestedPrice: '$40',
+            currentPrice: '₹45',
+            suggestedPrice: '₹40',
             expectedIncrease: '35% more responses'
           }
         },
@@ -82,7 +82,7 @@ const SmartRecommendations = ({ userProfile }) => {
           data: {
             route: 'Boston → NYC',
             demandIncrease: '85% higher demand',
-            estimatedEarnings: '$120-180 per trip'
+            estimatedEarnings: '₹120-180 per trip'
           }
         },
         {
@@ -114,7 +114,7 @@ const SmartRecommendations = ({ userProfile }) => {
           data: {
             peakTimes: 'Weekend mornings (8AM-12PM)',
             increase: '45% higher rates',
-            potentialEarnings: '$50-80 extra per weekend'
+            potentialEarnings: '₹50-80 extra per weekend'
           }
         }
       );
